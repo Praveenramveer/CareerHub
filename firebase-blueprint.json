@@ -1,0 +1,116 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account and authentication profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "email": { "type": "string", "maxLength": 150 },
+        "photoUrl": { "type": "string", "maxLength": 1000 },
+        "isVerified": { "type": "boolean" },
+        "authProvider": { "type": "string", "enum": ["google", "email"] },
+        "registeredAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "name", "email", "isVerified", "authProvider"]
+    },
+    "CareerProfile": {
+      "title": "CareerProfile",
+      "description": "Comprehensive student and candidate career context, academic records, and skills",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "fullName": { "type": "string", "maxLength": 120 },
+        "email": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "photo": { "type": "string", "maxLength": 2000 },
+        "linkedinUrl": { "type": "string", "maxLength": 500 },
+        "githubUrl": { "type": "string", "maxLength": 500 },
+        "portfolioUrl": { "type": "string", "maxLength": 500 },
+        "collegeName": { "type": "string", "maxLength": 200 },
+        "collegeYear": { "type": "string", "maxLength": 60 },
+        "degreeBranch": { "type": "string", "maxLength": 150 },
+        "currentCgpa": { "type": "string", "maxLength": 50 },
+        "expectedGraduationYear": { "type": "string", "maxLength": 20 },
+        "twelfthSchool": { "type": "string", "maxLength": 200 },
+        "twelfthBoard": { "type": "string", "maxLength": 50 },
+        "twelfthPercentage": { "type": "string", "maxLength": 50 },
+        "twelfthYear": { "type": "string", "maxLength": 20 },
+        "tenthSchool": { "type": "string", "maxLength": 200 },
+        "tenthBoard": { "type": "string", "maxLength": 50 },
+        "tenthPercentage": { "type": "string", "maxLength": 50 },
+        "tenthYear": { "type": "string", "maxLength": 20 },
+        "currentRole": { "type": "string", "maxLength": 150 },
+        "targetRole": { "type": "string", "maxLength": 150 },
+        "skills": { "type": "array" },
+        "targetSkills": { "type": "array" },
+        "careerGoals": { "type": "array" },
+        "summary": { "type": "string", "maxLength": 2000 },
+        "location": { "type": "string", "maxLength": 150 },
+        "industry": { "type": "string", "maxLength": 150 },
+        "experienceLevel": { "type": "string", "maxLength": 100 },
+        "workPreferences": { "type": "string", "maxLength": 200 },
+        "salaryExpectations": { "type": "string", "maxLength": 100 },
+        "certifications": { "type": "array" },
+        "achievements": { "type": "array" },
+        "projects": { "type": "array" },
+        "experiences": { "type": "array" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["userId"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Career advisor conversation thread",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "mode": { "type": "string", "enum": ["general", "roadmap", "resume", "interview", "skill_gap", "job_description"] },
+        "messages": { "type": "array" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "userId", "title", "mode", "createdAt", "updatedAt"]
+    },
+    "SavedJob": {
+      "title": "SavedJob",
+      "description": "Bookmarked Unstop job or internship opportunity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "company": { "type": "string", "maxLength": 200 },
+        "location": { "type": "string", "maxLength": 150 },
+        "type": { "type": "string", "maxLength": 60 },
+        "stipendOrSalary": { "type": "string", "maxLength": 100 },
+        "applyUrl": { "type": "string", "maxLength": 1000 },
+        "matchPercentage": { "type": "number" },
+        "savedAt": { "type": "number" }
+      },
+      "required": ["id", "userId", "title", "company", "applyUrl", "savedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Top-level user account record with verification and profile status"
+    },
+    "/users/{userId}/profile/career": {
+      "schema": "CareerProfile",
+      "description": "User career context memory document including college, previous studies, skills, projects"
+    },
+    "/users/{userId}/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Conversations and consultation threads owned by the user"
+    },
+    "/users/{userId}/saved_jobs/{jobId}": {
+      "schema": "SavedJob",
+      "description": "Jobs bookmarked by the user for application tracking"
+    }
+  }
+}

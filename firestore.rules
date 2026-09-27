@@ -1,0 +1,150 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net - Default Deny All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection Health-Check Test Document
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // Hardened Reusable Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // User Profile Validation
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'isVerified', 'authProvider']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.name is string && data.name.size() <= 120 &&
+        data.email is string && data.email.size() <= 150 &&
+        data.isVerified is bool &&
+        data.authProvider in ['google', 'email'] &&
+        (!('photoUrl' in data) || (data.photoUrl is string && data.photoUrl.size() <= 1000)) &&
+        (!('registeredAt' in data) || data.registeredAt is number) &&
+        (!('updatedAt' in data) || data.updatedAt is number);
+    }
+
+    // Career Profile Validation
+    function isValidCareerProfile(data, userId) {
+      return data.userId == userId &&
+        (!('fullName' in data) || (data.fullName is string && data.fullName.size() <= 120)) &&
+        (!('email' in data) || (data.email is string && data.email.size() <= 150)) &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 40)) &&
+        (!('photo' in data) || (data.photo is string && data.photo.size() <= 2000)) &&
+        (!('linkedinUrl' in data) || (data.linkedinUrl is string && data.linkedinUrl.size() <= 500)) &&
+        (!('githubUrl' in data) || (data.githubUrl is string && data.githubUrl.size() <= 500)) &&
+        (!('portfolioUrl' in data) || (data.portfolioUrl is string && data.portfolioUrl.size() <= 500)) &&
+        (!('collegeName' in data) || (data.collegeName is string && data.collegeName.size() <= 200)) &&
+        (!('collegeYear' in data) || (data.collegeYear is string && data.collegeYear.size() <= 60)) &&
+        (!('degreeBranch' in data) || (data.degreeBranch is string && data.degreeBranch.size() <= 150)) &&
+        (!('currentCgpa' in data) || (data.currentCgpa is string && data.currentCgpa.size() <= 50)) &&
+        (!('expectedGraduationYear' in data) || (data.expectedGraduationYear is string && data.expectedGraduationYear.size() <= 20)) &&
+        (!('twelfthSchool' in data) || (data.twelfthSchool is string && data.twelfthSchool.size() <= 200)) &&
+        (!('twelfthBoard' in data) || (data.twelfthBoard is string && data.twelfthBoard.size() <= 50)) &&
+        (!('twelfthPercentage' in data) || (data.twelfthPercentage is string && data.twelfthPercentage.size() <= 50)) &&
+        (!('twelfthYear' in data) || (data.twelfthYear is string && data.twelfthYear.size() <= 20)) &&
+        (!('tenthSchool' in data) || (data.tenthSchool is string && data.tenthSchool.size() <= 200)) &&
+        (!('tenthBoard' in data) || (data.tenthBoard is string && data.tenthBoard.size() <= 50)) &&
+        (!('tenthPercentage' in data) || (data.tenthPercentage is string && data.tenthPercentage.size() <= 50)) &&
+        (!('tenthYear' in data) || (data.tenthYear is string && data.tenthYear.size() <= 20)) &&
+        (!('targetRole' in data) || (data.targetRole is string && data.targetRole.size() <= 150)) &&
+        (!('currentRole' in data) || (data.currentRole is string && data.currentRole.size() <= 150)) &&
+        (!('summary' in data) || (data.summary is string && data.summary.size() <= 2000)) &&
+        (!('skills' in data) || (data.skills is list && data.skills.size() <= 50)) &&
+        (!('targetSkills' in data) || (data.targetSkills is list && data.targetSkills.size() <= 50)) &&
+        (!('careerGoals' in data) || (data.careerGoals is list && data.careerGoals.size() <= 20)) &&
+        (!('location' in data) || (data.location is string && data.location.size() <= 150)) &&
+        (!('industry' in data) || (data.industry is string && data.industry.size() <= 150)) &&
+        (!('experienceLevel' in data) || (data.experienceLevel is string && data.experienceLevel.size() <= 100)) &&
+        (!('workPreferences' in data) || (data.workPreferences is string && data.workPreferences.size() <= 200)) &&
+        (!('salaryExpectations' in data) || (data.salaryExpectations is string && data.salaryExpectations.size() <= 100)) &&
+        (!('certifications' in data) || (data.certifications is list && data.certifications.size() <= 30)) &&
+        (!('achievements' in data) || (data.achievements is list && data.achievements.size() <= 30)) &&
+        (!('projects' in data) || (data.projects is list && data.projects.size() <= 30)) &&
+        (!('experiences' in data) || (data.experiences is list && data.experiences.size() <= 30)) &&
+        (!('updatedAt' in data) || data.updatedAt is number);
+    }
+
+    // Conversation Validation
+    function isValidConversation(data, userId) {
+      return data.keys().hasAll(['id', 'userId', 'title', 'mode', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == userId &&
+        data.title is string && data.title.size() <= 150 &&
+        data.mode in ['general', 'roadmap', 'resume', 'interview', 'skill_gap', 'job_description'] &&
+        data.messages is list && data.messages.size() <= 100 &&
+        data.createdAt is number &&
+        data.updatedAt is number;
+    }
+
+    // Saved Job Validation
+    function isValidSavedJob(data, userId) {
+      return data.keys().hasAll(['id', 'userId', 'title', 'company', 'applyUrl', 'savedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == userId &&
+        data.title is string && data.title.size() <= 200 &&
+        data.company is string && data.company.size() <= 200 &&
+        data.applyUrl is string && data.applyUrl.size() <= 1000 &&
+        data.savedAt is number &&
+        (!('matchPercentage' in data) || data.matchPercentage is number);
+    }
+
+    // Users Collection & Subcollections
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming()) && incoming().id == userId;
+      allow update: if isOwner(userId) && isValidUserProfile(incoming()) && incoming().id == existing().id;
+      allow delete: if isOwner(userId);
+
+      // Career Profile Subdocument
+      match /profile/{profileDoc} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidCareerProfile(incoming(), userId);
+        allow update: if isOwner(userId) && isValidCareerProfile(incoming(), userId) && incoming().userId == existing().userId;
+        allow delete: if isOwner(userId);
+      }
+
+      // Conversations Subcollection
+      match /conversations/{conversationId} {
+        allow get: if isOwner(userId) && isValidId(conversationId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(conversationId) && isValidConversation(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(conversationId) && isValidConversation(incoming(), userId) && incoming().userId == existing().userId && incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(conversationId);
+      }
+
+      // Saved Jobs Subcollection
+      match /saved_jobs/{jobId} {
+        allow get: if isOwner(userId) && isValidId(jobId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(jobId) && isValidSavedJob(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(jobId) && isValidSavedJob(incoming(), userId) && incoming().userId == existing().userId;
+        allow delete: if isOwner(userId) && isValidId(jobId);
+      }
+    }
+  }
+}

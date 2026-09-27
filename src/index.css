@@ -1,0 +1,513 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply antialiased;
+    font-size: 16px;
+    line-height: 1.625;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f1f5f9;
+    color: #1e293b;
+  }
+
+  .dark body,
+  body.dark,
+  html.dark body {
+    background-color: #0f172a;
+    color: #f1f5f9;
+  }
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.55);
+}
+
+/* ==========================================================================
+   60-30-10 COLOR HARMONY & NEUMORPHIC SPECIFICATION
+   - Dominant (60%): Cool Gray Mist (#F1F5F9)
+   - Secondary (30%): Slate Gray (#475569) for subtext and structural borders
+   - Accent (10%): Emerald Green (#059669) for growth, safety, and action
+   ========================================================================== */
+
+/* ==========================================================================
+   GLASS CARD MORPHISM SPECIFICATION (Translucent Frosted Glass & Specular Highlights)
+   - Optical Refraction: backdrop-filter: blur(16px) saturate(180%)
+   - Specular Edge Highlights: 1px luminous border + top inset highlight
+   - Seamless Depth: cloth background movement visible through frosted panels
+   - Dominant Accent: Emerald Green (#059669) crystalline glow
+   ========================================================================== */
+
+/* 1. Glass Card / Panel Surface (Primary container & card surface) */
+.glass-card,
+.neu-flat {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 10px 30px -5px rgba(31, 38, 135, 0.07), 0 4px 12px -2px rgba(0, 0, 0, 0.04), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s ease,
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dynamic Edge Glow Spotlight - lights up edge precisely where cursor hits */
+.glass-card::before,
+.neu-flat::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 2px;
+  background: radial-gradient(
+    380px circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
+    rgba(52, 211, 153, 0.95) 0%,
+    rgba(16, 185, 129, 0.60) 25%,
+    rgba(5, 150, 105, 0.20) 50%,
+    transparent 72%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 10;
+}
+
+.glass-card:hover::before,
+.neu-flat:hover::before,
+.glass-card:focus-within::before,
+.neu-flat:focus-within::before {
+  opacity: 1;
+}
+
+/* Edge Glow on Cursor Hit - Light Mode */
+.glass-card:hover,
+.neu-flat:hover,
+.glass-card:focus-within,
+.neu-flat:focus-within {
+  border-color: rgba(5, 150, 105, 0.65);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35),
+              0 0 25px 2px rgba(16, 185, 129, 0.40),
+              0 0 10px 1px rgba(52, 211, 153, 0.30),
+              0 16px 36px -4px rgba(31, 38, 135, 0.12),
+              inset 0 0 16px 0 rgba(16, 185, 129, 0.14),
+              inset 0 1px 1px 0 #ffffff;
+}
+
+.dark .glass-card,
+.dark.glass-card,
+.dark .neu-flat,
+.dark.neu-flat {
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.45), 0 4px 12px 0 rgba(0, 0, 0, 0.25), inset 0 1px 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+/* Edge Glow on Cursor Hit - Dark Mode */
+.dark .glass-card:hover,
+.dark.glass-card:hover,
+.dark .neu-flat:hover,
+.dark.neu-flat:hover,
+.dark .glass-card:focus-within,
+.dark.glass-card:focus-within,
+.dark .neu-flat:focus-within,
+.dark.neu-flat:focus-within {
+  border-color: rgba(52, 211, 153, 0.75);
+  box-shadow: 0 0 0 1.5px rgba(16, 185, 129, 0.50),
+              0 0 32px 3px rgba(16, 185, 129, 0.55),
+              0 0 14px 2px rgba(52, 211, 153, 0.45),
+              0 20px 48px -4px rgba(0, 0, 0, 0.65),
+              inset 0 0 20px 0 rgba(16, 185, 129, 0.20),
+              inset 0 1px 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* 1b. Subtle / Compact Glass Card Surface */
+.glass-card-sm,
+.neu-flat-sm {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-card-sm:hover,
+.neu-flat-sm:hover {
+  border-color: rgba(5, 150, 105, 0.55);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35),
+              0 0 18px 1px rgba(16, 185, 129, 0.35),
+              0 6px 18px 0 rgba(31, 38, 135, 0.08),
+              inset 0 0 10px rgba(16, 185, 129, 0.12);
+}
+
+.dark .glass-card-sm,
+.dark.glass-card-sm,
+.dark .neu-flat-sm,
+.dark.neu-flat-sm {
+  background-color: rgba(15, 23, 42, 0.60);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.14);
+}
+
+.dark .glass-card-sm:hover,
+.dark.glass-card-sm:hover,
+.dark .neu-flat-sm:hover,
+.dark.neu-flat-sm:hover {
+  border-color: rgba(52, 211, 153, 0.65);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.45),
+              0 0 22px 2px rgba(16, 185, 129, 0.45),
+              0 8px 22px 0 rgba(0, 0, 0, 0.45),
+              inset 0 0 12px rgba(16, 185, 129, 0.18);
+}
+
+/* 2. Glass Inset Surface (Inputs, pressed buttons, sunken frosted wells) */
+.glass-inset,
+.neu-inset {
+  background-color: rgba(241, 245, 249, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.dark .glass-inset,
+.dark.glass-inset,
+.dark .neu-inset,
+.dark.neu-inset {
+  background-color: rgba(10, 15, 29, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45), 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+/* 2b. Compact Glass Inset Surface */
+.glass-inset-sm,
+.neu-inset-sm {
+  background-color: rgba(241, 245, 249, 0.50);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(203, 213, 225, 0.4);
+  box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-inset-sm,
+.dark.glass-inset-sm,
+.dark .neu-inset-sm,
+.dark.neu-inset-sm {
+  background-color: rgba(10, 15, 29, 0.50);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* 3. Glass Tactile Button */
+.glass-btn,
+.neu-btn {
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 1px #ffffff;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-btn:hover,
+.neu-btn:hover {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(16, 185, 129, 0.65);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35),
+              0 0 18px 1px rgba(16, 185, 129, 0.35),
+              0 6px 20px rgba(0, 0, 0, 0.08),
+              inset 0 1px 1px #ffffff;
+  transform: translateY(-1px);
+}
+
+.glass-btn:active,
+.neu-btn:active,
+.neu-btn.pressed,
+.neu-btn:focus-visible:active,
+.neu-btn[aria-pressed="true"] {
+  background-color: rgba(241, 245, 249, 0.7);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(1px);
+}
+
+.dark .glass-btn,
+.dark.glass-btn,
+.dark .neu-btn,
+.dark.neu-btn {
+  background-color: rgba(30, 41, 59, 0.60);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.30), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.dark .glass-btn:hover,
+.dark.glass-btn:hover,
+.dark .neu-btn:hover,
+.dark.neu-btn:hover {
+  background-color: rgba(30, 41, 59, 0.80);
+  border-color: rgba(52, 211, 153, 0.70);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.45),
+              0 0 22px 2px rgba(16, 185, 129, 0.45),
+              0 8px 24px rgba(0, 0, 0, 0.40),
+              inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.dark .glass-btn:active,
+.dark.glass-btn:active,
+.dark .neu-btn:active,
+.dark.neu-btn:active,
+.dark .neu-btn.pressed,
+.dark .neu-btn:focus-visible:active,
+.dark .neu-btn[aria-pressed="true"] {
+  background-color: rgba(15, 23, 42, 0.7);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  transform: translateY(1px);
+}
+
+/* 4. Glass Emerald Accent Button (Crystalline Emerald Growth/Action) */
+.glass-btn-accent,
+.neu-btn-accent {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.90) 0%, rgba(5, 150, 105, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #ffffff;
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  box-shadow: 0 8px 24px -4px rgba(5, 150, 105, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-btn-accent:hover,
+.neu-btn-accent:hover {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.98) 0%, rgba(5, 150, 105, 1.0) 100%);
+  border-color: rgba(52, 211, 153, 0.65);
+  box-shadow: 0 12px 28px -4px rgba(5, 150, 105, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.glass-btn-accent:active,
+.neu-btn-accent:active,
+.neu-btn-accent.pressed,
+.neu-btn-accent:focus-visible:active {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(4, 120, 87, 1.0) 100%);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.35);
+  transform: translateY(1px);
+}
+
+.dark .glass-btn-accent,
+.dark .neu-btn-accent {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.88) 0%, rgba(5, 150, 105, 0.94) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  box-shadow: 0 8px 24px -4px rgba(5, 150, 105, 0.50), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+.dark .glass-btn-accent:hover,
+.dark .neu-btn-accent:hover {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.95) 0%, rgba(16, 185, 129, 1.0) 100%);
+  border-color: rgba(110, 231, 183, 0.7);
+  box-shadow: 0 12px 30px -4px rgba(5, 150, 105, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.dark .glass-btn-accent:active,
+.dark .neu-btn-accent:active,
+.dark .neu-btn-accent.pressed,
+.dark .neu-btn-accent:focus-visible:active {
+  background: linear-gradient(135deg, rgba(4, 120, 87, 0.95) 0%, rgba(6, 95, 70, 1.0) 100%);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6);
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   5. ACCESSIBILITY & KEYBOARD FOCUS-VISIBLE SPECIFICATION
+   - High-contrast, non-clipping dual focus rings for all interactive elements
+   - Distinct visual focus indicators for keyboard navigation via Tab, Enter, Space
+   ========================================================================== */
+
+/* Universal keyboard focus indicator */
+:focus-visible {
+  outline: 2px solid #059669;
+  outline-offset: 2px;
+}
+
+.dark :focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+/* Neumorphic interactive elements keyboard focus ring */
+.neu-btn:focus-visible,
+.neu-btn-accent:focus-visible,
+.neu-flat:focus-visible,
+.neu-flat-sm:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible {
+  outline: 2px solid #059669 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 1px #f1f5f9, 6px 6px 14px #d2dbe6, -6px -6px 14px #ffffff !important;
+}
+
+.dark .neu-btn:focus-visible,
+.dark .neu-btn-accent:focus-visible,
+.dark .neu-flat:focus-visible,
+.dark .neu-flat-sm:focus-visible,
+.dark [role="button"]:focus-visible,
+.dark [role="tab"]:focus-visible {
+  outline: 2px solid #10b981 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 1px #0f172a, 6px 6px 14px #0a0f1d, -6px -6px 14px #263349 !important;
+}
+
+/* Inset inputs, textareas & select dropdowns on keyboard focus */
+.neu-inset:focus-visible,
+.neu-inset-sm:focus-visible,
+input.neu-inset:focus-visible,
+textarea.neu-inset:focus-visible,
+select.neu-inset:focus-visible {
+  outline: 2px solid #059669 !important;
+  outline-offset: 1px !important;
+}
+
+.dark .neu-inset:focus-visible,
+.dark .neu-inset-sm:focus-visible,
+.dark input.neu-inset:focus-visible,
+.dark textarea.neu-inset:focus-visible,
+.dark select.neu-inset:focus-visible {
+  outline: 2px solid #10b981 !important;
+  outline-offset: 1px !important;
+}
+
+/* Fallback mappings for legacy glassmorphic classes to clean Neumorphism */
+.glass-panel {
+  background-color: #1e293b;
+  box-shadow: 6px 6px 14px #0a0f1d, -6px -6px 14px #263349;
+}
+
+.glass-panel-light {
+  background-color: #f1f5f9;
+  box-shadow: 6px 6px 14px #d2dbe6, -6px -6px 14px #ffffff;
+}
+
+.glass-card {
+  background-color: #1e293b;
+  box-shadow: 4px 4px 10px #0a0f1d, -4px -4px 10px #263349;
+}
+
+.glass-card-light {
+  background-color: #f1f5f9;
+  box-shadow: 4px 4px 10px #d2dbe6, -4px -4px 10px #ffffff;
+}
+
+/* Markdown styling inside AI messages */
+.markdown-content {
+  font-size: 1.025rem;
+  line-height: 1.75;
+}
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+  font-weight: 600;
+  margin-top: 1.35rem;
+  margin-bottom: 0.65rem;
+  color: inherit;
+}
+.markdown-content h1 { font-size: 1.55rem; }
+.markdown-content h2 { font-size: 1.35rem; }
+.markdown-content h3 { font-size: 1.18rem; }
+.markdown-content h4 { font-size: 1.05rem; }
+
+.markdown-content p {
+  margin-bottom: 0.95rem;
+}
+.markdown-content p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-top: 0.45rem;
+  margin-bottom: 0.95rem;
+  padding-left: 1.5rem;
+}
+.markdown-content ul { list-style-type: disc; }
+.markdown-content ol { list-style-type: decimal; }
+.markdown-content li {
+  margin-bottom: 0.4rem;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.1rem 0;
+  font-size: 0.96rem;
+  overflow-x: auto;
+  display: block;
+}
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  padding: 0.65rem 0.95rem;
+  text-align: left;
+}
+.markdown-content th {
+  background-color: rgba(148, 163, 184, 0.12);
+  font-weight: 600;
+}
+
+.markdown-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92em;
+  padding: 0.18rem 0.4rem;
+  border-radius: 0.3rem;
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.markdown-content pre {
+  margin: 0.95rem 0;
+  padding: 0.95rem;
+  border-radius: 0.6rem;
+  background: rgba(15, 23, 42, 0.85);
+  overflow-x: auto;
+  font-size: 0.92rem;
+}
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid #38bdf8;
+  padding-left: 0.85rem;
+  margin: 0.85rem 0;
+  opacity: 0.9;
+  font-style: italic;
+}
+

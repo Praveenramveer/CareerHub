@@ -1,0 +1,6 @@
+{
+  "name": "CareerSphere AI",
+  "description": "Your AI Career & Professional Growth Companion - An intelligent conversational assistant for career planning, resume analysis, interview coaching, and skill roadmaps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
